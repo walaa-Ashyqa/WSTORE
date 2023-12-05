@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { DevTool } from '@hookform/devtools';
- 
+import axios from "axios"
+import {  toast } from 'react-toastify';
 import * as yup from "yup"
 const schema = yup
   .object({
@@ -14,20 +15,55 @@ const schema = yup
 
 
 function Register() {
-  const form = useForm({mode:"all",   })
-  const { register, control, handleSubmit,watch, formState: { errors,isDirty,isValid }, } = form
+  const form = useForm({mode:"all",})
+  const { register, control, handleSubmit,watch, formState: { errors,isDirty,isValid },setValue } = form
 
-  const onSubmit = (data) => {
-    console.log("Form Submeit", data)
+  const onSubmit =  async users => {
+    console.log("Form users", users)
+   const x = users.image[0];
+   users.image=x;
+   console.log("Form usersusers", users)
+    //setValue('image',data.image.file)
+    const formData = new FormData();
+    formData.append("userName",users.userName);
+    formData.append("email",users.email);
+    formData.append("password",users.password);
+    formData.append("image",users.image);
+    for(let data of formData.entries())
+    console.log( data)
+ const {data}= await axios.post("https://ecommerce-node4.vercel.app/auth/signup",formData)
+ console.log( data)
+ if(data.message=='success'){
+  form.reset();
+    toast.success('Account created succesfully,please verify your email to login.', {
+      position: "top-left",
+      autoClose: false,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      });
+  
+    }
+ 
+ console.log("Form data", x )
   }
   const onError = (errors) => {
     console.log("Form errors", errors)
+  }
+  const onChangimage= e => {
+    console.log(e.target.files[0],"Form IMAGE HHHHH")
+ 
+  
+
   }
  //const watchValue=watch();
   return (
     <>
 <div className='container p-5'>
-      <Form className='px-5 pt-5' onSubmit={handleSubmit(onSubmit,onError)} noValidate>
+      <Form className='px-5 pt-5' onSubmit={handleSubmit(onSubmit,onError)} encType='multipart/form-data' noValidate>
         <h1>Create New Account</h1>
        
         <Form.Group className="mb-3 w-75" >
@@ -131,6 +167,22 @@ function Register() {
           <Form.Text className='text-danger px-4  '>
             {errors.password?.message}
             {console.log(errors.password?.message)}
+          </Form.Text>
+        </Form.Group>
+
+        <Form.Group className="mb-3 w-75" >
+          <Form.Label>User Image</Form.Label>
+          <Form.Control type="file" placeholder="Loade your image" id='image'  {...register(
+            "image",
+            {
+              
+           
+            }
+
+          )} />
+          <Form.Text className='text-danger px-4'>
+            {errors.userName?.message}
+            {console.log(errors.userName?.message)}
           </Form.Text>
         </Form.Group>
 
