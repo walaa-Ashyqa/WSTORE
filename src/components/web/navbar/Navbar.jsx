@@ -1,7 +1,30 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-
+import React, { useContext } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
+import { CartContext } from '../cart/CartContextProvider';
+import { useQuery } from 'react-query';
+import './Navbar.css'
+import { UserContext } from '../context/User';
 function Navbar() {
+  const {getCartContext}=useContext(CartContext);
+  let {userToken,setUserToken}=useContext(UserContext)
+  let navigate=useNavigate();
+  const getCart = async () => {
+    const  res = await getCartContext();
+    console.log(res);
+    return res;
+}
+  const { data, isLoading } = useQuery('getCart_details', getCart)
+
+  const signout=() =>{
+    setUserToken(null);
+    localStorage.removeItem("userToken");
+    console.log(userToken);
+    navigate('/home');
+  }
+  console.log(data?.count);
+
   return (
     <>
    <nav className="navbar navbar-expand-lg bg-dark ">
@@ -26,15 +49,30 @@ function Navbar() {
       </ul>
 
      <ul className="navbar-nav  mb-2 mb-lg-0 ">
+     <li className="nav-item px-4">
+          <Link className="nav-link text-white position-relative"  to="/cart"><FontAwesomeIcon className='mx-3' icon={faCartShopping} />
+          <span className='bg-warning text-dark rounded rounded-5 position-absolute cart-count px-2'>{data?.count}</span></Link>
+        </li>
  <li className="nav-item dropdown ">
           <a className="nav-link dropdown-toggle text-white" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
+            Account
           </a>
           <ul className="dropdown-menu bg-dark">
-            <li><Link className="dropdown-item text-white"  to="/register"> Register</Link></li>
+            {userToken==null? <> 
+             <li><Link className="dropdown-item text-white"  to="/register"> Register</Link></li>
             <li><hr className="dropdown-divider" /></li>
-            <li><Link className="dropdown-item text-white" to="/login">Login</Link></li>
+            <li><Link className="dropdown-item text-white" to="/login">Login</Link></li> 
+            </> : <>
+            <li><Link className="dropdown-item text-white"  to="/profile"> Profile</Link></li>
+            <li><hr className="dropdown-divider" /></li>
+            <li><Link className="dropdown-item text-white"   onClick={()=>signout()}>Sign out</Link></li>
+            </> }
+           
+
+            
+
           </ul>
+          
         </li>
      </ul>
     </div>

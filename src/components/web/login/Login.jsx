@@ -1,10 +1,14 @@
- import React from 'react'
+ import React, { useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { DevTool } from '@hookform/devtools';
- 
+import axios from "axios"
 import * as yup from "yup"
+import { Link, useNavigate } from 'react-router-dom';
+import {  toast } from 'react-toastify';
+import { UserContext } from '../context/User';
+
 const schema = yup
   .object({
     userName: yup.string().required("user name is required!").min(3,"must be at least 3 char").max(20,"max char must be 20"),
@@ -13,11 +17,37 @@ const schema = yup
  
 
 function Login() {
+  let navigate=useNavigate();
+  let {userToken,setUserToken}=useContext(UserContext)
+  // if(!userToken){
+  //   navigate('/home');
+  // }
     const form = useForm({mode:"all",   })
+    
     const { register, control, handleSubmit,watch, formState: { errors,isDirty,isValid }, } = form
+
+    const onSubmit =  async users => {
+      console.log("Form users", users)
+   const {data}= await axios.post("https://ecommerce-node4.vercel.app/auth/signin",users)
+   console.log( data)
+   if(data.message=='success'){
+    localStorage.setItem("userToken",data.token);
+    setUserToken(data.token);
+    form.reset();
+      toast.success('login succesfully.', {
+        position: "top-left",
+        autoClose: false,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+        });
+        navigate('/home')
+      }
+   
   
-    const onSubmit = (data) => {
-      console.log("Form Submeit", data)
     }
     const onError = (errors) => {
       console.log("Form errors", errors)
@@ -100,13 +130,15 @@ function Login() {
               }
             
             )} />
-            <Form.Text className='text-danger px-4  '>
+            <Form.Text className='text-danger  px-4  '>
               {errors.password?.message}
               {console.log(errors.password?.message)}
             </Form.Text>
           </Form.Group>
-  
-          <Button className="btn btn-warning" type="submit" disabled={!isValid}>
+          <Form.Group>
+          <Form.Text className='text-secondary '><Link to="/forgetpassword">forget password!</Link></Form.Text>
+          </Form.Group>
+          <Button className="btn btn-warning mt-4" type="submit" disabled={!isValid}>
             Login
           </Button>
           <DevTool control={control} />

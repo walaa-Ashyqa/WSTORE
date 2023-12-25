@@ -3,16 +3,16 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 function Home() {
   return (
-    <div className='conatiner m-5'>
+    <div className='conatiner m-5 '>
       
-      <Card className="text-center p-5 border-0 text-uppercase">
+      <Card className="text-center p-5 border-0 text-uppercase w-100">
      
       <Card.Body>
         <Card.Title><h1 >Everything you need</h1></Card.Title>
-        <Card.Text>
-        Welcome to Washab, start your tour now and find what you want.
+        <Card.Text className='p-2 text-gray '>
+       Welcome to Washab, start your tour now and find what you want. 
         </Card.Text>
-        <Button variant="warning">Explore Now</Button>
+        <Button className='btn-lg' variant="warning">Explore Now</Button>
       </Card.Body>
      
     </Card>

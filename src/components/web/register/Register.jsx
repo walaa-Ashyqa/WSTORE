@@ -6,6 +6,7 @@ import { DevTool } from '@hookform/devtools';
 import axios from "axios"
 import {  toast } from 'react-toastify';
 import * as yup from "yup"
+import { useNavigate } from 'react-router-dom';
 const schema = yup
   .object({
     userName: yup.string().required("user name is required!").min(3,"must be at least 3 char").max(20,"max char must be 20"),
@@ -15,6 +16,7 @@ const schema = yup
 
 
 function Register() {
+  const navigate=useNavigate();
   const form = useForm({mode:"all",})
   const { register, control, handleSubmit,watch, formState: { errors,isDirty,isValid },setValue } = form
 
@@ -45,7 +47,7 @@ function Register() {
       progress: undefined,
       theme: "dark",
       });
-  
+      navigate('/home')
     }
  
  console.log("Form data", x )
@@ -81,7 +83,7 @@ function Register() {
                 message: "max char must be 20",         
               },
               minLength: {
-                value: 6,
+                value: 3,
                 message: "must be at least 3 char",     
               },
              
@@ -176,12 +178,11 @@ function Register() {
             "image",
             {
               
-           
             }
 
           )} />
           <Form.Text className='text-danger px-4'>
-            {errors.userName?.message}
+            {errors.image?.message}
             {console.log(errors.userName?.message)}
           </Form.Text>
         </Form.Group>
