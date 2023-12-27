@@ -1,8 +1,10 @@
 import React from 'react'
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import Categories from '../categories/Categories';
 function Home() {
   return (
+    <>
     <div className='conatiner m-5 '>
       
       <Card className="text-center p-5 border-0 text-uppercase w-100">
@@ -17,6 +19,10 @@ function Home() {
      
     </Card>
     </div>
+    <div className='conatiner m-5 '>
+<Categories/>
+    </div>
+    </>
   )
 }
 

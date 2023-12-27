@@ -16,6 +16,9 @@ import ResetPassword from "../components/web/password/ResetPassword";
 import Profile from "../components/web/profile/Profile";
 import ProtectRoute from "../components/web/rules/ProtectRoute";
 import Auth from "../components/web/rules/Auth";
+import CreateOrder from "../components/web/order/CreateOrder";
+import UserInfo from "../components/web/profile/UserInfo";
+import UserContact from "../components/web/profile/UserContact";
 
 export const router = createBrowserRouter([
     {
@@ -75,8 +78,20 @@ export const router = createBrowserRouter([
           path: "profile",
           element: <ProtectRoute>
             <Profile/>
-            </ProtectRoute>
-        }
+            </ProtectRoute>,
+            children:
+          [ 
+             { path: "info",
+          element: <UserInfo/>}
+          ,
+          { path: "contact",
+          element: <UserContact/>}
+        ]
+        },
+         {
+          path: "order",
+          element: <CreateOrder/>
+        },
       ]
     },
     {

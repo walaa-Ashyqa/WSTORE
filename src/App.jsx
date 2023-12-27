@@ -21,13 +21,16 @@ import Product from './components/web/products/Product';
 import CartContextProvider from './components/web/cart/CartContextProvider';
 import Cart from './components/web/cart/Cart';
 import {router} from './layouts/routes'
+import OrderContextProvider from './components/web/context/Orders';
 function App() {
    
 
 
   return (
     <CartContextProvider>
+      <OrderContextProvider>
     <RouterProvider router={router} />
+    </OrderContextProvider>
     </CartContextProvider>
   )
 }

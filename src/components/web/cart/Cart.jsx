@@ -1,10 +1,15 @@
 import React, { useContext } from 'react'
 import './Cart.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrash, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faTrash } from '@fortawesome/free-solid-svg-icons'
 import { CartContext } from './CartContextProvider';
 import { useQuery } from 'react-query';
+import axios from "axios"
+import { useNavigate } from 'react-router-dom';
+
 function Cart() {
+  let navigate=useNavigate();
+
     const {getCartContext,removeCartItem}=useContext(CartContext);
  let totalPrice=0
 let Subtotal=0
@@ -30,6 +35,23 @@ const discount =.2
               });
         return res;
     }}
+    const createOrder = async () => {
+      navigate('/order')
+    }
+    
+    const clearallcart=async()=>{
+      try {
+        const token=localStorage.getItem("userToken");
+        console.log(token)
+
+        const { data } = await axios.patch(`${import.meta.env.VITE_API_URL}/cart/clear`,null,
+        {headers:{Authorization:`Tariq__${token}`}});
+        
+        return data
+      } catch (error) {
+        console.log(error)
+      }
+    }
     const { data, isLoading } = useQuery('getCart_details', getCart)
     console.log(data)
     console.log(isLoading)
@@ -41,6 +63,7 @@ const discount =.2
     }
    
     )
+   
     if (isLoading) {
         return (
           <div className='container p-5'>
@@ -101,7 +124,12 @@ const discount =.2
 
 }
                 
-               
+<button type="button" onClick={()=>clearallcart()} className="btn  btn-secondary btn-block ">
+                      <div className="d-flex justify-content-between">
+                         
+                        <span>Clear Cart</span>
+                      </div>
+                    </button>  
               </div>
               <div className="col-lg-5">
                 <div className="card bg-dark text-white rounded-3">
@@ -152,10 +180,10 @@ const discount =.2
                       <p className="mb-2">Total(Incl. taxes)</p>
                       <p className="mb-2">${totalPrice}</p>
                     </div>
-                    <button type="button" className="btn btn-warning btn-block btn-lg">
+                    <button type="button" onClick={()=>createOrder()} className="btn btn-warning btn-block btn-lg">
                       <div className="d-flex justify-content-between">
                          
-                        <span>Checkout <i className="fas fa-long-arrow-alt-right ms-2" /></span>
+                        <span>Check out </span>
                       </div>
                     </button>
                   </div>
